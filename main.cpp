@@ -9,6 +9,8 @@
 using U8 = uint8_t;
 
 static std::atomic<bool> writingAllocationMessages = false;
+static std::atomic<bool> writingDeallocationMessages = false;
+
 static std::atomic<std::size_t> allocationCount = 0;
 
 void *operator new(const std::size_t size) {
@@ -22,24 +24,45 @@ void *operator new(const std::size_t size) {
   return std::malloc(size);
 }
 
-void operator delete(void *pointer) noexcept { std::free(pointer); }
-void operator delete(void *pointer, const std::size_t size) noexcept { std::free(pointer); }
+void operator delete(void *pointer) noexcept {
+  if (writingDeallocationMessages) {
+    std::cout << "Freed a pointer.\n";
+  }
+  std::free(pointer);
+}
+
+void operator delete(void *pointer, const std::size_t size) noexcept {
+  if (writingDeallocationMessages) {
+    std::cout << "Freed an array of size " << size << ".\n";
+  }
+  std::free(pointer);
+}
 
 void disableAllocationMessages() { writingAllocationMessages = false; }
 
 void enableAllocationMessages() { writingAllocationMessages = true; }
 
+void disableDeallocationMessages() { writingDeallocationMessages = false; }
+
+void enableDeallocationMessages() { writingDeallocationMessages = true; }
+
 class AllocationTrackerGuard {
   std::size_t allocationCountAtStart;
 
 public:
-  AllocationTrackerGuard() : allocationCountAtStart(allocationCount) { enableAllocationMessages(); }
+  AllocationTrackerGuard(bool trackDeallocations) : allocationCountAtStart(allocationCount) {
+    enableAllocationMessages();
+    if (trackDeallocations) {
+      enableDeallocationMessages();
+    }
+  }
 
   virtual ~AllocationTrackerGuard() {
     if (allocationCount == allocationCountAtStart) {
       std::cout << "Made no allocations.\n";
     }
     disableAllocationMessages();
+    disableDeallocationMessages();
   }
 };
 
@@ -50,13 +73,29 @@ void testVectorAssignment() {
       std::vector<U8> lhs(lhsSize);
       std::vector<U8> rhs(rhsSize);
       std::cout << "Testing assigning vector of size " << rhsSize << " to a vector of size " << lhsSize << ". ";
-      AllocationTrackerGuard allocationTrackerGuard;
+      AllocationTrackerGuard allocationTrackerGuard(false);
       lhs = rhs;
     }
   }
 }
 
+void testVectorAllocationsAndFreesWithBlocks() {
+  AllocationTrackerGuard allocationTrackerGuard(true);
+  const std::size_t vectorSize = 4;
+  std::cout << "Creating two vectors of size " << vectorSize << " in the same block.\n";
+  {
+    std::vector<std::byte> vectorA(vectorSize);
+    std::vector<std::byte> vectorB(vectorSize);
+  }
+  std::cout << "Creating two vectors of size " << vectorSize << " in two consecutive blocks.\n";
+  {
+    { std::vector<std::byte> vector(vectorSize); }
+    { std::vector<std::byte> vector(vectorSize); }
+  }
+}
+
 int main() {
   testVectorAssignment();
+  testVectorAllocationsAndFreesWithBlocks();
   return 0;
 }
