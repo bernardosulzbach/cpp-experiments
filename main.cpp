@@ -8,7 +8,17 @@
 #include <unordered_set>
 #include <vector>
 
-using U8 = uint8_t;
+#include <boost/type_index.hpp>
+
+using U8 = std::uint8_t;
+
+template <typename T> std::string getPrettyTypeName() {
+  std::string name = boost::typeindex::type_id<T>().pretty_name();
+  name += " (";
+  name += std::to_string(8U * sizeof(T));
+  name += " bits)";
+  return name;
+}
 
 static std::atomic<bool> writingAllocationMessages = false;
 static std::atomic<bool> writingDeallocationMessages = false;
@@ -125,10 +135,72 @@ void testUnorderedSetGrowth() {
   }
 }
 
+void testUnscopedEnumsUnderlyingTypes() {
+  std::cout << "Testing the underlying types of unscoped enums.\n";
+  {
+    enum Enum { Value };
+    std::cout << "Underlying type of enum Enum { Value }: ";
+    using UnderlyingType = std::underlying_type_t<Enum>;
+    std::cout << getPrettyTypeName<UnderlyingType>() << ".\n";
+  }
+  {
+    enum Enum { Negative = -1, Positive = 1 };
+    std::cout << "Underlying type of enum Enum { Negative = -1, Positive = 1 }: ";
+    using UnderlyingType = std::underlying_type_t<Enum>;
+    std::cout << getPrettyTypeName<UnderlyingType>() << ".\n";
+  }
+  {
+    enum Enum { Value = std::numeric_limits<uint64_t>::max() };
+    std::cout << "Underlying type of enum Enum { Value = std::numeric_limits<uint64_t>::max() }: ";
+    using UnderlyingType = std::underlying_type_t<Enum>;
+    std::cout << getPrettyTypeName<UnderlyingType>() << ".\n";
+  }
+  {
+    enum Enum { Negative = std::numeric_limits<int64_t>::min(), Positive = std::numeric_limits<int64_t>::max() };
+    std::cout << "Underlying type of enum Enum { Negative = std::numeric_limits<int64_t>::min(), Positive = std::numeric_limits<int64_t>::max() }: ";
+    using UnderlyingType = std::underlying_type_t<Enum>;
+    std::cout << getPrettyTypeName<UnderlyingType>() << ".\n";
+  }
+  {
+    enum Enum { Negative = std::numeric_limits<uint64_t>::min(), Positive = std::numeric_limits<uint64_t>::max() };
+    std::cout << "Underlying type of enum Enum { Negative = std::numeric_limits<uint64_t>::min(), Positive = std::numeric_limits<uint64_t>::max() }: ";
+    using UnderlyingType = std::underlying_type_t<Enum>;
+    std::cout << getPrettyTypeName<UnderlyingType>() << ".\n";
+  }
+  {
+    enum Enum { Negative = -1, Positive = std::numeric_limits<uint64_t>::max() };
+    std::cout << "Underlying type of enum Enum { Negative = -1, Positive = std::numeric_limits<uint64_t>::max() }: ";
+    using UnderlyingType = std::underlying_type_t<Enum>;
+    std::cout << getPrettyTypeName<UnderlyingType>() << ".\n";
+  }
+}
+
+void testScopedEnumsUnderlyingTypes() {
+  std::cout << "Testing the underlying types of scoped enums.\n";
+  {
+    enum class Enum { Value };
+    std::cout << "Underlying type of enum class Enum { Value }: ";
+    using UnderlyingType = std::underlying_type_t<Enum>;
+    std::cout << getPrettyTypeName<UnderlyingType>() << ".\n";
+  }
+  {
+    enum class Enum { Negative = -1, Positive = 1 };
+    std::cout << "Underlying type of enum class Enum { Negative = -1, Positive = 1 }: ";
+    using UnderlyingType = std::underlying_type_t<Enum>;
+    std::cout << getPrettyTypeName<UnderlyingType>() << ".\n";
+  }
+}
+
+void testUnderlyingEnumTypes() {
+  testUnscopedEnumsUnderlyingTypes();
+  testScopedEnumsUnderlyingTypes();
+}
+
 int main() {
   testVectorAssignment();
   testVectorAllocationsAndFreesWithBlocks();
   testInsertWithConflictingKeyInUnorderedMap();
   testUnorderedSetGrowth();
+  testUnderlyingEnumTypes();
   return 0;
 }
