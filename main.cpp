@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <iostream>
 #include <memory>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 using U8 = uint8_t;
@@ -12,6 +14,14 @@ static std::atomic<bool> writingAllocationMessages = false;
 static std::atomic<bool> writingDeallocationMessages = false;
 
 static std::atomic<std::size_t> allocationCount = 0;
+
+template <typename T> bool hasChanged(T &lastT, const T newT) {
+  if (lastT == newT) {
+    return false;
+  }
+  lastT = newT;
+  return true;
+}
 
 void *operator new(const std::size_t size) {
   if (allocationCount == std::numeric_limits<decltype(allocationCount)::value_type>::max()) {
@@ -94,8 +104,31 @@ void testVectorAllocationsAndFreesWithBlocks() {
   }
 }
 
+void testInsertWithConflictingKeyInUnorderedMap() {
+  std::unordered_map<int, int> map;
+  map.insert(std::pair<int, int>{1, 2});
+  map.insert(std::pair<int, int>{2, 3});
+  map.insert(std::pair<int, int>{1, 3});
+  for (const auto [key, value] : map) {
+    std::cout << key << ": " << value << '\n';
+  }
+}
+
+void testUnorderedSetGrowth() {
+  std::unordered_set<int> set;
+  size_t lastBucketCount = 0;
+  for (int i = 0; i < 100'000; i++) {
+    set.insert(i);
+    if (hasChanged(lastBucketCount, set.bucket_count())) {
+      std::cout << "Bucket count changed to " << lastBucketCount << ".\n";
+    }
+  }
+}
+
 int main() {
   testVectorAssignment();
   testVectorAllocationsAndFreesWithBlocks();
+  testInsertWithConflictingKeyInUnorderedMap();
+  testUnorderedSetGrowth();
   return 0;
 }
