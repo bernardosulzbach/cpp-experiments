@@ -10,6 +10,10 @@
 
 #include <boost/type_index.hpp>
 
+#include "memory.hpp"
+#include "sso.hpp"
+
+namespace Experiments {
 using U8 = std::uint8_t;
 
 template <typename T> std::string getPrettyTypeName() {
@@ -20,11 +24,6 @@ template <typename T> std::string getPrettyTypeName() {
   return name;
 }
 
-static std::atomic<bool> writingAllocationMessages = false;
-static std::atomic<bool> writingDeallocationMessages = false;
-
-static std::atomic<std::size_t> allocationCount = 0;
-
 template <typename T> bool hasChanged(T &lastT, const T newT) {
   if (lastT == newT) {
     return false;
@@ -33,59 +32,6 @@ template <typename T> bool hasChanged(T &lastT, const T newT) {
   return true;
 }
 
-void *operator new(const std::size_t size) {
-  if (allocationCount == std::numeric_limits<decltype(allocationCount)::value_type>::max()) {
-    throw std::bad_alloc();
-  }
-  if (writingAllocationMessages) {
-    std::cout << "Made an allocation of size " << size << ".\n";
-  }
-  allocationCount++;
-  return std::malloc(size);
-}
-
-void operator delete(void *pointer) noexcept {
-  if (writingDeallocationMessages) {
-    std::cout << "Freed a pointer.\n";
-  }
-  std::free(pointer);
-}
-
-void operator delete(void *pointer, const std::size_t size) noexcept {
-  if (writingDeallocationMessages) {
-    std::cout << "Freed an array of size " << size << ".\n";
-  }
-  std::free(pointer);
-}
-
-void disableAllocationMessages() { writingAllocationMessages = false; }
-
-void enableAllocationMessages() { writingAllocationMessages = true; }
-
-void disableDeallocationMessages() { writingDeallocationMessages = false; }
-
-void enableDeallocationMessages() { writingDeallocationMessages = true; }
-
-class AllocationTrackerGuard {
-  std::size_t allocationCountAtStart;
-
-public:
-  AllocationTrackerGuard(bool trackDeallocations) : allocationCountAtStart(allocationCount) {
-    enableAllocationMessages();
-    if (trackDeallocations) {
-      enableDeallocationMessages();
-    }
-  }
-
-  virtual ~AllocationTrackerGuard() {
-    if (allocationCount == allocationCountAtStart) {
-      std::cout << "Made no allocations.\n";
-    }
-    disableAllocationMessages();
-    disableDeallocationMessages();
-  }
-};
-
 void testVectorAssignment() {
   std::array<std::size_t, 3> sizes = {10, 100, 1000};
   for (const auto lhsSize : sizes) {
@@ -93,14 +39,14 @@ void testVectorAssignment() {
       std::vector<U8> lhs(lhsSize);
       std::vector<U8> rhs(rhsSize);
       std::cout << "Testing assigning vector of size " << rhsSize << " to a vector of size " << lhsSize << ". ";
-      AllocationTrackerGuard allocationTrackerGuard(false);
+      AllocationTrackerGuard allocationTrackerGuard(true, false);
       lhs = rhs;
     }
   }
 }
 
 void testVectorAllocationsAndFreesWithBlocks() {
-  AllocationTrackerGuard allocationTrackerGuard(true);
+  AllocationTrackerGuard allocationTrackerGuard(true, true);
   const std::size_t vectorSize = 4;
   std::cout << "Creating two vectors of size " << vectorSize << " in the same block.\n";
   {
@@ -196,11 +142,15 @@ void testUnderlyingEnumTypes() {
   testScopedEnumsUnderlyingTypes();
 }
 
-int main() {
+[[nodiscard]] int main() {
   testVectorAssignment();
   testVectorAllocationsAndFreesWithBlocks();
   testInsertWithConflictingKeyInUnorderedMap();
   testUnorderedSetGrowth();
   testUnderlyingEnumTypes();
-  return 0;
+  testSmallStringOptimizationSize();
+  return EXIT_SUCCESS;
 }
+} // namespace Experiments
+
+int main() { return Experiments::main(); }
