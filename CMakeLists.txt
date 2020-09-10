@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-if(CMAKE_BUILD_TYPE MATCHES "Debug")
+if(CMAKE_BUILD_TYPE MATCHES "Debug" AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_definitions(-Wall)
   add_definitions(-Wextra)
   add_definitions(-Wshadow)
