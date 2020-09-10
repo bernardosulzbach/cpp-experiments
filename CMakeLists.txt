@@ -8,11 +8,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  message("Compiler is GCC/Clang, using a lot of warnings.")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wunreachable-code -Wreturn-type")
+endif()
+
 if(CMAKE_BUILD_TYPE MATCHES "Debug" AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  add_definitions(-Wall)
-  add_definitions(-Wextra)
-  add_definitions(-Wshadow)
-  add_definitions(-DDEBUGGING)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak")
