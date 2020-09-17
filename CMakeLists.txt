@@ -22,6 +22,16 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug" AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU
   set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fsanitize=leak")
 endif()
 
-add_library(cpp-experiments-objects OBJECT src/sso.hpp src/sso.cpp src/memory.hpp src/memory.cpp)
+add_library(
+  cpp-experiments-objects OBJECT
+  src/sso.hpp
+  src/sso.cpp
+  src/memory.hpp
+  src/memory.cpp
+  src/enumerate.hpp
+  src/enumerate.cpp
+  src/types.hpp
+  src/special_member_function_monitor.hpp
+  src/special_member_function_monitor.cpp)
 
 add_executable(cpp-experiments src/main.cpp $<TARGET_OBJECTS:cpp-experiments-objects>)

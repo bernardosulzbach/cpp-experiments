@@ -1,7 +1,6 @@
 #include <atomic>
 #include <bitset>
 #include <chrono>
-#include <cstdint>
 #include <iostream>
 #include <memory>
 #include <unordered_map>
@@ -11,11 +10,11 @@
 #include <boost/type_index.hpp>
 
 #include "memory.hpp"
+#include "special_member_function_monitor.hpp"
 #include "sso.hpp"
+#include "types.hpp"
 
 namespace Experiments {
-using U8 = std::uint8_t;
-
 template <typename T> std::string getPrettyTypeName() {
   std::string name = boost::typeindex::type_id<T>().pretty_name();
   name += " (";
@@ -142,6 +141,37 @@ void testUnderlyingEnumTypes() {
   testScopedEnumsUnderlyingTypes();
 }
 
+void testPushBackAndEmplaceBackAllocations() {
+  const auto printSpecialMemberFunctionCallCount = [](const std::string &situation) {
+    std::cout << "When using " << situation << ", ";
+    SpecialMemberFunctionMonitor::print();
+    std::cout << "\n";
+    SpecialMemberFunctionMonitor::reset();
+  };
+  {
+    std::vector<SpecialMemberFunctionMonitor> vector;
+    SpecialMemberFunctionMonitor monitor;
+    vector.push_back(monitor);
+  }
+  printSpecialMemberFunctionCallCount("push_back() with lvalue");
+  {
+    std::vector<SpecialMemberFunctionMonitor> vector;
+    vector.push_back({});
+  }
+  printSpecialMemberFunctionCallCount("push_back() with rvalue");
+  {
+    std::vector<SpecialMemberFunctionMonitor> vector;
+    SpecialMemberFunctionMonitor monitor;
+    vector.emplace_back(monitor);
+  }
+  printSpecialMemberFunctionCallCount("emplace_back() with lvalue");
+  {
+    std::vector<SpecialMemberFunctionMonitor> vector;
+    vector.emplace_back();
+  }
+  printSpecialMemberFunctionCallCount("emplace_back() constructor arguments");
+}
+
 [[nodiscard]] int main() {
   testVectorAssignment();
   testVectorAllocationsAndFreesWithBlocks();
@@ -149,6 +179,7 @@ void testUnderlyingEnumTypes() {
   testUnorderedSetGrowth();
   testUnderlyingEnumTypes();
   testSmallStringOptimizationSize();
+  testPushBackAndEmplaceBackAllocations();
   return EXIT_SUCCESS;
 }
 } // namespace Experiments
