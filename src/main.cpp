@@ -2,7 +2,6 @@
 #include <bitset>
 #include <chrono>
 #include <iostream>
-#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -10,6 +9,7 @@
 #include <boost/type_index.hpp>
 
 #include "memory.hpp"
+#include "shared_ptr.hpp"
 #include "special_member_function_monitor.hpp"
 #include "sso.hpp"
 #include "types.hpp"
@@ -180,6 +180,7 @@ void testPushBackAndEmplaceBackAllocations() {
   testUnderlyingEnumTypes();
   testSmallStringOptimizationSize();
   testPushBackAndEmplaceBackAllocations();
+  testSharedPointerMemoryAllocations();
   return EXIT_SUCCESS;
 }
 } // namespace Experiments

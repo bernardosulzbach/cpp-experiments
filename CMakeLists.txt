@@ -28,6 +28,8 @@ add_library(
   src/sso.cpp
   src/memory.hpp
   src/memory.cpp
+  src/shared_ptr.hpp
+  src/shared_ptr.cpp
   src/enumerate.hpp
   src/enumerate.cpp
   src/types.hpp
