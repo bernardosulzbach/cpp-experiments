@@ -1,5 +1,6 @@
 #include "shared_ptr.hpp"
 
+#include <array>
 #include <memory>
 
 #include "memory.hpp"

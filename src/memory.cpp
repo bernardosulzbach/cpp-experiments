@@ -1,6 +1,7 @@
 #include "memory.hpp"
 
 #include <atomic>
+#include <limits>
 
 std::atomic<bool> writingAllocationMessages = false;
 std::atomic<bool> writingDeallocationMessages = false;
@@ -26,7 +27,8 @@ void enableDeallocationMessages() {
 }
 
 void *operator new(const std::size_t size) {
-  if (allocationCount == std::numeric_limits<decltype(allocationCount)::value_type>::max()) {
+  // This should be using "std::numeric_limits<decltype(allocationCount)::value_type>::max()", but LLVM does not have value_type for atomic.
+  if (allocationCount == std::numeric_limits<std::size_t>::max()) {
     throw std::bad_alloc();
   }
   if (writingAllocationMessages) {
