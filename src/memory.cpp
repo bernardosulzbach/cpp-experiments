@@ -38,6 +38,14 @@ void *operator new(const std::size_t size) {
   return std::malloc(size);
 }
 
+void *operator new(const std::size_t size, const std::nothrow_t &) noexcept {
+  try {
+    return operator new(size);
+  } catch (const std::exception &exception) {
+    return nullptr;
+  }
+}
+
 void operator delete(void *pointer) noexcept {
   if (writingDeallocationMessages) {
     std::cout << "Freed a pointer.\n";

@@ -10,16 +10,16 @@ U64 SpecialMemberFunctionMonitor::destructor = 0;
 
 SpecialMemberFunctionMonitor::SpecialMemberFunctionMonitor() { constructor++; }
 
-SpecialMemberFunctionMonitor::SpecialMemberFunctionMonitor(const SpecialMemberFunctionMonitor &rhs) noexcept { copyConstructor++; }
+SpecialMemberFunctionMonitor::SpecialMemberFunctionMonitor(const SpecialMemberFunctionMonitor &) noexcept { copyConstructor++; }
 
-SpecialMemberFunctionMonitor::SpecialMemberFunctionMonitor(SpecialMemberFunctionMonitor &&rhs) noexcept { moveConstructor++; }
+SpecialMemberFunctionMonitor::SpecialMemberFunctionMonitor(SpecialMemberFunctionMonitor &&) noexcept { moveConstructor++; }
 
-SpecialMemberFunctionMonitor &SpecialMemberFunctionMonitor::operator=(const SpecialMemberFunctionMonitor &rhs) noexcept {
+SpecialMemberFunctionMonitor &SpecialMemberFunctionMonitor::operator=(const SpecialMemberFunctionMonitor &) noexcept {
   copyAssignment++;
   return *this;
 }
 
-SpecialMemberFunctionMonitor &SpecialMemberFunctionMonitor::operator=(SpecialMemberFunctionMonitor &&rhs) noexcept {
+SpecialMemberFunctionMonitor &SpecialMemberFunctionMonitor::operator=(SpecialMemberFunctionMonitor &&) noexcept {
   moveAssignment++;
   return *this;
 }

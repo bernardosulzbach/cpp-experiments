@@ -6,23 +6,14 @@
 #include <unordered_set>
 #include <vector>
 
-#include <boost/type_index.hpp>
-
 #include "memory.hpp"
 #include "shared_ptr.hpp"
+#include "sorting.hpp"
 #include "special_member_function_monitor.hpp"
 #include "sso.hpp"
 #include "types.hpp"
 
 namespace Experiments {
-template <typename T> std::string getPrettyTypeName() {
-  std::string name = boost::typeindex::type_id<T>().pretty_name();
-  name += " (";
-  name += std::to_string(8U * sizeof(T));
-  name += " bits)";
-  return name;
-}
-
 template <typename T> bool hasChanged(T &lastT, const T newT) {
   if (lastT == newT) {
     return false;
@@ -181,6 +172,8 @@ void testPushBackAndEmplaceBackAllocations() {
   testSmallStringOptimizationSize();
   testPushBackAndEmplaceBackAllocations();
   testSharedPointerMemoryAllocations();
+  testSortAllocations();
+  testStableSortAllocations();
   return EXIT_SUCCESS;
 }
 } // namespace Experiments

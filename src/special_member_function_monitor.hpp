@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "enumerate.hpp"
+#include "formatting.hpp"
 #include "types.hpp"
 
 namespace Experiments {
