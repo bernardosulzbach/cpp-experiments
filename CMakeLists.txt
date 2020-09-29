@@ -38,6 +38,8 @@ add_library(
   src/shared_ptr.cpp
   src/formatting.hpp
   src/formatting.cpp
+  src/container_growth.hpp
+  src/container_growth.cpp
   src/types.hpp
   src/special_member_function_monitor.hpp
   src/special_member_function_monitor.cpp)

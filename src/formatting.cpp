@@ -1,7 +1,11 @@
 #include "formatting.hpp"
 
+#include <iomanip>
+#include <sstream>
 #include <string>
 #include <vector>
+
+#include "types.hpp"
 
 namespace Experiments {
 std::string enumerate(const std::vector<std::string> &strings) {
@@ -19,6 +23,22 @@ std::string enumerate(const std::vector<std::string> &strings) {
       }
     }
     result += strings[i];
+  }
+  return result;
+}
+
+std::string toFixedPrecisionString(double value, U32 decimalPlaces) {
+  std::stringstream stream;
+  stream << std::fixed << std::setprecision(static_cast<int>(decimalPlaces)) << value;
+  return stream.str();
+}
+
+std::string pluralizeAsNeeded(const U64 value, const std::string_view noun) {
+  std::string result = std::to_string(value);
+  result += " ";
+  result += noun;
+  if (value != 1) {
+    result += "s";
   }
   return result;
 }

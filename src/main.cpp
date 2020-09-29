@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "container_growth.hpp"
 #include "memory.hpp"
 #include "shared_ptr.hpp"
 #include "sorting.hpp"
@@ -14,14 +15,6 @@
 #include "types.hpp"
 
 namespace Experiments {
-template <typename T> bool hasChanged(T &lastT, const T newT) {
-  if (lastT == newT) {
-    return false;
-  }
-  lastT = newT;
-  return true;
-}
-
 void testVectorAssignment() {
   std::array<std::size_t, 3> sizes = {10, 100, 1000};
   for (const auto lhsSize : sizes) {
@@ -57,17 +50,6 @@ void testInsertWithConflictingKeyInUnorderedMap() {
   map.insert(std::pair<int, int>{1, 3});
   for (const auto [key, value] : map) {
     std::cout << key << ": " << value << '\n';
-  }
-}
-
-void testUnorderedSetGrowth() {
-  std::unordered_set<int> set;
-  size_t lastBucketCount = 0;
-  for (int i = 0; i < 100'000; i++) {
-    set.insert(i);
-    if (hasChanged(lastBucketCount, set.bucket_count())) {
-      std::cout << "Bucket count changed to " << lastBucketCount << ".\n";
-    }
   }
 }
 
@@ -166,8 +148,9 @@ void testPushBackAndEmplaceBackAllocations() {
 [[nodiscard]] int main() {
   testVectorAssignment();
   testVectorAllocationsAndFreesWithBlocks();
-  testInsertWithConflictingKeyInUnorderedMap();
+  testVectorGrowth();
   testUnorderedSetGrowth();
+  testInsertWithConflictingKeyInUnorderedMap();
   testUnderlyingEnumTypes();
   testSmallStringOptimizationSize();
   testPushBackAndEmplaceBackAllocations();
