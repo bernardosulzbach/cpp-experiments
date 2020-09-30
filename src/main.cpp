@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "constexpr_math.hpp"
 #include "container_growth.hpp"
 #include "experiment_runner.hpp"
 #include "memory.hpp"
@@ -98,6 +99,7 @@ void testPushBackAndEmplaceBackAllocations() {
   ExperimentRunner(testSharedPointerMemoryAllocations).run();
   ExperimentRunner(testSortAllocations).run();
   ExperimentRunner(testStableSortAllocations).run();
+  ExperimentRunner(testConstexprMath).run();
   return EXIT_SUCCESS;
 }
 } // namespace Experiments
