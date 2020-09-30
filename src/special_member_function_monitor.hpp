@@ -6,7 +6,6 @@
 #include "types.hpp"
 
 namespace Experiments {
-
 class SpecialMemberFunctionMonitor {
   static U64 constructor;
   static U64 copyConstructor;

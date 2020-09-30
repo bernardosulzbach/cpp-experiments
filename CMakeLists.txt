@@ -44,6 +44,8 @@ add_library(
   src/experiment_runner.hpp
   src/experiment_runner.cpp
   src/special_member_function_monitor.hpp
-  src/special_member_function_monitor.cpp)
+  src/special_member_function_monitor.cpp
+  src/underlying_enum_types.hpp
+  src/underlying_enum_types.cpp)
 
 add_executable(cpp-experiments src/main.cpp $<TARGET_OBJECTS:cpp-experiments-objects>)
