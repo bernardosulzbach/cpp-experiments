@@ -41,6 +41,8 @@ add_library(
   src/container_growth.hpp
   src/container_growth.cpp
   src/types.hpp
+  src/experiment_runner.hpp
+  src/experiment_runner.cpp
   src/special_member_function_monitor.hpp
   src/special_member_function_monitor.cpp)
 

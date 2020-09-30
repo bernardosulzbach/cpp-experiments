@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "container_growth.hpp"
+#include "experiment_runner.hpp"
 #include "memory.hpp"
 #include "shared_ptr.hpp"
 #include "sorting.hpp"
@@ -146,17 +147,17 @@ void testPushBackAndEmplaceBackAllocations() {
 }
 
 [[nodiscard]] int main() {
-  testVectorAssignment();
-  testVectorAllocationsAndFreesWithBlocks();
-  testVectorGrowth();
-  testUnorderedSetGrowth();
-  testInsertWithConflictingKeyInUnorderedMap();
-  testUnderlyingEnumTypes();
-  testSmallStringOptimizationSize();
-  testPushBackAndEmplaceBackAllocations();
-  testSharedPointerMemoryAllocations();
-  testSortAllocations();
-  testStableSortAllocations();
+  ExperimentRunner(testVectorAssignment).run();
+  ExperimentRunner(testVectorAllocationsAndFreesWithBlocks).run();
+  ExperimentRunner(testVectorGrowth).run();
+  ExperimentRunner(testUnorderedSetGrowth).run();
+  ExperimentRunner(testInsertWithConflictingKeyInUnorderedMap).run();
+  ExperimentRunner(testUnderlyingEnumTypes).run();
+  ExperimentRunner(testSmallStringOptimizationSize).run();
+  ExperimentRunner(testPushBackAndEmplaceBackAllocations).run();
+  ExperimentRunner(testSharedPointerMemoryAllocations).run();
+  ExperimentRunner(testSortAllocations).run();
+  ExperimentRunner(testStableSortAllocations).run();
   return EXIT_SUCCESS;
 }
 } // namespace Experiments
