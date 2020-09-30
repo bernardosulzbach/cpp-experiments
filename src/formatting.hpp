@@ -9,7 +9,8 @@
 #include "types.hpp"
 
 namespace Experiments {
-inline static constexpr std::string_view Indentation = "  ";
+static constexpr std::string_view Warning = "WARNING: ";
+static constexpr std::string_view Indentation = "  ";
 
 template <typename T> std::string getPrettyTypeName() {
   std::string name = boost::typeindex::type_id<T>().pretty_name();
