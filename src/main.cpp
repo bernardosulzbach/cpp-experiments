@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "atomic_types.hpp"
 #include "container_growth.hpp"
 #include "experiment_runner.hpp"
 #include "memory.hpp"
@@ -86,7 +87,37 @@ void testPushBackAndEmplaceBackAllocations() {
   printSpecialMemberFunctionCallCount("emplace_back() constructor arguments");
 }
 
+static constexpr auto CPlusPlus98 = 199711L;
+static constexpr auto CPlusPlus11 = 201103L;
+static constexpr auto CPlusPlus14 = 201402L;
+static constexpr auto CPlusPlus17 = 201703L;
+
+void printStandard() noexcept {
+  std::cout << "The C++ standard used ";
+  if (__cplusplus < CPlusPlus98) {
+    std::cout << "predates C++98";
+  } else if (__cplusplus == CPlusPlus98) {
+    std::cout << "is C++98";
+  } else if (__cplusplus < CPlusPlus11) {
+    std::cout << "predates C++11";
+  } else if (__cplusplus == CPlusPlus11) {
+    std::cout << "is C++11";
+  } else if (__cplusplus < CPlusPlus14) {
+    std::cout << "predates C++14";
+  } else if (__cplusplus == CPlusPlus14) {
+    std::cout << "is C++14";
+  } else if (__cplusplus < CPlusPlus17) {
+    std::cout << "predates C++17";
+  } else if (__cplusplus == CPlusPlus17) {
+    std::cout << "is C++17";
+  } else {
+    std::cout << "succeeds C++17";
+  }
+  std::cout << ".\n";
+}
+
 [[nodiscard]] int main() {
+  printStandard();
   ExperimentRunner(testVectorAssignment).run();
   ExperimentRunner(testVectorAllocationsAndFreesWithBlocks).run();
   ExperimentRunner(testVectorGrowth).run();
@@ -98,6 +129,7 @@ void testPushBackAndEmplaceBackAllocations() {
   ExperimentRunner(testSharedPointerMemoryAllocations).run();
   ExperimentRunner(testSortAllocations).run();
   ExperimentRunner(testStableSortAllocations).run();
+  ExperimentRunner(testSizesOfAtomicTypes).run();
   return EXIT_SUCCESS;
 }
 } // namespace Experiments
