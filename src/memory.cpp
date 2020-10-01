@@ -13,11 +13,15 @@ void *operator new(const std::size_t size) {
   if (allocationCount == std::numeric_limits<std::size_t>::max()) {
     throw std::bad_alloc();
   }
+  void *result = std::malloc(size);
+  if (result == nullptr) {
+    throw std::bad_alloc();
+  }
   if (writingAllocationMessages) {
     std::cout << "Made an allocation of size " << size << ".\n";
   }
   allocationCount++;
-  return std::malloc(size);
+  return result;
 }
 
 void *operator new(const std::size_t size, const std::nothrow_t &) noexcept {
