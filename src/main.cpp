@@ -14,6 +14,7 @@
 #include "sorting.hpp"
 #include "special_member_function_monitor.hpp"
 #include "sso.hpp"
+#include "struct_reordering.hpp"
 #include "types.hpp"
 #include "underlying_enum_types.hpp"
 
@@ -130,6 +131,7 @@ void printStandard() noexcept {
   ExperimentRunner(testSortAllocations).run();
   ExperimentRunner(testStableSortAllocations).run();
   ExperimentRunner(testSizesOfAtomicTypes).run();
+  ExperimentRunner(testStructReordering).run();
   return EXIT_SUCCESS;
 }
 } // namespace Experiments
