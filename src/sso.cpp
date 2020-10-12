@@ -1,5 +1,6 @@
 #include "sso.hpp"
 
+#include "formatting.hpp"
 #include "memory.hpp"
 
 #include <cassert>
@@ -30,6 +31,7 @@ namespace Experiments {
 }
 
 void testSmallStringOptimizationSize() {
+  std::cout << "std::string takes " << pluralizeAsNeeded(sizeof(std::string), "byte") << ".\n";
   const auto maximumSmallStringOptimizationSize = findMaximumSmallStringOptimizationSize();
   if (maximumSmallStringOptimizationSize == 0) {
     std::cout << "No small string optimization (SSO) support.\n";
