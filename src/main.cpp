@@ -122,6 +122,7 @@ void printStandard() noexcept {
   ExperimentRunner(testVectorAssignment).run();
   ExperimentRunner(testVectorAllocationsAndFreesWithBlocks).run();
   ExperimentRunner(testVectorGrowth).run();
+  ExperimentRunner(testVectorReserveGrowth).run();
   ExperimentRunner(testUnorderedSetGrowth).run();
   ExperimentRunner(testInsertWithConflictingKeyInUnorderedMap).run();
   ExperimentRunner(testUnderlyingEnumTypes).run();

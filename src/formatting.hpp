@@ -10,6 +10,7 @@
 
 namespace Experiments {
 static constexpr std::string_view Warning = "WARNING: ";
+static constexpr std::string_view WarningIndentation = "         ";
 static constexpr std::string_view Indentation = "  ";
 
 template <typename T> std::string getPrettyTypeName() {
