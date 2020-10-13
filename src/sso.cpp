@@ -30,8 +30,11 @@ namespace Experiments {
   return a - 1u;
 }
 
+void testStringSize() { std::cout << "std::string takes " << pluralizeAsNeeded(sizeof(std::string), "byte") << ".\n"; }
+
+void testStringMaximumSize() { std::cout << "std::string maximum size: " << toStringWithThousandsSeparators(std::string().max_size()) << "\n"; }
+
 void testSmallStringOptimizationSize() {
-  std::cout << "std::string takes " << pluralizeAsNeeded(sizeof(std::string), "byte") << ".\n";
   const auto maximumSmallStringOptimizationSize = findMaximumSmallStringOptimizationSize();
   if (maximumSmallStringOptimizationSize == 0) {
     std::cout << "No small string optimization (SSO) support.\n";

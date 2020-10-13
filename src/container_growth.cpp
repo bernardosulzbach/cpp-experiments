@@ -28,6 +28,11 @@ template <typename T> void updateIfChangedAndNotify(T &lastT, const T newT) {
   lastT = newT;
 }
 
+void testVectorMaximumSize() {
+  std::cout << "std::vector<bool> maximum size: " << toStringWithThousandsSeparators(std::vector<bool>().max_size()) << "\n";
+  std::cout << "std::vector<int> maximum size: " << toStringWithThousandsSeparators(std::vector<int>().max_size()) << "\n";
+}
+
 void testVectorGrowth() {
   std::vector<int> vector;
   auto lastCapacity = vector.capacity();

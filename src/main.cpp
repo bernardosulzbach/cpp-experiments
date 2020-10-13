@@ -121,12 +121,15 @@ void printStandard() noexcept {
   printStandard();
   ExperimentRunner(testVectorAssignment).run();
   ExperimentRunner(testVectorAllocationsAndFreesWithBlocks).run();
+  ExperimentRunner(testVectorMaximumSize).run();
   ExperimentRunner(testVectorGrowth).run();
   ExperimentRunner(testVectorReserveGrowth).run();
   ExperimentRunner(testUnorderedSetGrowth).run();
   ExperimentRunner(testInsertWithConflictingKeyInUnorderedMap).run();
-  ExperimentRunner(testUnderlyingEnumTypes).run();
+  ExperimentRunner(testStringSize).run();
+  ExperimentRunner(testStringMaximumSize).run();
   ExperimentRunner(testSmallStringOptimizationSize).run();
+  ExperimentRunner(testUnderlyingEnumTypes).run();
   ExperimentRunner(testPushBackAndEmplaceBackAllocations).run();
   ExperimentRunner(testSharedPointerMemoryAllocations).run();
   ExperimentRunner(testSortAllocations).run();

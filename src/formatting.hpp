@@ -26,4 +26,6 @@ template <typename T> std::string getPrettyTypeName() {
 [[nodiscard]] std::string toFixedPrecisionString(double value, unsigned decimalPlaces);
 
 [[nodiscard]] std::string pluralizeAsNeeded(U64 value, std::string_view noun);
+
+[[nodiscard]] std::string toStringWithThousandsSeparators(U64 value);
 } // namespace Experiments

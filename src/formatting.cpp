@@ -42,4 +42,17 @@ std::string pluralizeAsNeeded(const U64 value, const std::string_view noun) {
   }
   return result;
 }
+
+class WithThousandsSeparators : public std::numpunct<char> {
+protected:
+  char do_thousands_sep() const override { return ','; }
+  std::string do_grouping() const override { return "\03"; }
+};
+
+[[nodiscard]] std::string toStringWithThousandsSeparators(U64 value) {
+  std::stringstream stream;
+  stream.imbue(std::locale(std::locale::classic(), new WithThousandsSeparators));
+  stream << value;
+  return stream.str();
+}
 } // namespace Experiments
