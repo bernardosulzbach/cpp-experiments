@@ -3,7 +3,6 @@
 #include "formatting.hpp"
 #include "memory.hpp"
 
-#include <cassert>
 #include <string>
 
 namespace Experiments {
